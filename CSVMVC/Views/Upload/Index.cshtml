@@ -1,0 +1,111 @@
+﻿@model CSVMVC.Models.UploadTableModel
+@{
+    ViewBag.Title = "Главная";
+}
+<br />
+<style>
+
+    .custom-file-upload {
+        background: #f7f7f7;
+        padding: 8px;
+        border: 1px solid #e3e3e3;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="form-inline">
+            @using (Html.BeginForm("Import", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="form-group">
+                    <label for="choose-file" class="custom-file-upload" id="choose-file-label">
+                        Upload Document
+                    </label>
+                    <input name="postedFile" type="file" id="choose-file" style="display: none;" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success form-control" data-toggle="modal" data-target="#exampleModal" value="Import CSV" />
+                </div>
+            }
+
+            @if (Session["FileIsInvalid"]?.ToString() == true.ToString())
+            {
+                <div class="alert alert-danger alert-dismissible">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <div>@Session["ErrorMessage"]</div>
+                </div>
+
+                Session["FileIsInvalid"] = null;
+                Session["ErrorMessage"] = null;
+            }
+
+
+            @if (Session["FileIsEmpty"]?.ToString() == true.ToString())
+            {
+                <div class="alert alert-danger alert-dismissible">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <div>@Session["ErrorEmptyMessage"]</div>
+                </div>
+
+                Session["FileIsEmpty"] = null;
+                Session["ErrorEmptyMessage"] = null;
+            }
+        </div>
+
+        <br />
+        @if (Session["Message"] != null)
+        {
+            <div class="alert alert-success alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <div>@Session["Message"]</div>
+            </div>
+            Session["Message"] = null;
+        }
+
+        <table class="table table-bordered table-striped  text-center" id="dataTable">
+            <thead>
+                <tr>
+                    <td width="1%"><b>Payroll Number</b></td>
+                    <td><b>Forenames</b></td>
+                    <td><b>Surname</b></td>
+                    <td width="1%"><b>Date of Birth</b></td>
+                    <td><b>Telephone</b></td>
+                    <td><b>Mobile</b></td>
+                    <td><b>Address</b></td>
+                    <td><b>Address_2</b></td>
+                    <td><b>Postcode</b></td>
+                    <td width="1%"><b>EMail Home</b></td>
+                    <td width="1%"><b>Start Date</b></td>
+                    <td><b>Actions</b></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Rows)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(model => item.Payroll_Number)</td>
+                        <td>@Html.DisplayFor(model => item.Forenames)</td>
+                        <td>@Html.DisplayFor(model => item.Surname)</td>
+                        <td>@Html.DisplayFor(model => item.Date_of_Birth)</td>
+                        <td>@Html.DisplayFor(model => item.Telephone)</td>
+                        <td>@Html.DisplayFor(model => item.Mobile)</td>
+                        <td>@Html.DisplayFor(model => item.Address)</td>
+                        <td>@Html.DisplayFor(model => item.Address_2)</td>
+                        <td>@Html.DisplayFor(model => item.Postcode)</td>
+                        <td>@Html.DisplayFor(model => item.EMail_Home)</td>
+                        <td>@Html.DisplayFor(model => item.Start_Date)</td>
+                        <td>
+                            <a class="btn btn-success" href="@Url.Action("Edit", "Upload", new {@id=@item.ID})">Edit</a><br /><br />
+                            <a class="btn btn-danger" href="@Url.Action("Delete", "Upload", new {@id=@item.ID})">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+    </div>
